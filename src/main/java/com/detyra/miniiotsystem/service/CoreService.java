@@ -12,8 +12,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CoreService {
@@ -21,29 +19,44 @@ public class CoreService {
     private ApplianceRepository applianceRepository;
     @Autowired
     private DataPointRepository dataPointRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public void handleDataPoint(DataPoint dp) {
 
         // 1. Find the device in the DB (by type & attribute)
+        Appliance appliance = applianceRepository.findByType(dp.getType()).orElseThrow(() -> new GeneralException("No appliance found!"));
+
+        ApplianceAttribute applianceAttribute = appliance.getAttributes().stream().filter(attribute -> attribute.getAttribute().equals(dp.getAttribute())).findFirst().orElseThrow(() -> new GeneralException("This device does not have this attribute "));
 
         // 2. write data point to DB
+        storeInDb(dp);
 
         // 3. sendSignal
+        SignalData signalData = new SignalData();
+        signalData.setValue(dp.getValue());
+        signalData.setMessage("Value of: " + dp.getType());
 
         // 4. Check if signal value is within appliance attribute Min & Max, if yes sendAlert
-
+        if (signalData.getValue() > applianceAttribute.getMax() || signalData.getValue() < applianceAttribute.getMin()) {
+            signalData.setCritical(true);
+        } else {
+            signalData.setCritical(false);
+        }
+        sendSignal(signalData);
     }
 
     private void storeInDb(DataPoint dp) {
+        dataPointRepository.save(dp);
     }
 
     @SendTo("/topic/messages")
     private void sendSignal(SignalData d) {
-
+        messagingTemplate.convertAndSend("/topic/messages", d);
     }
 
-    @SendTo("/topic/messages")
+  /*  @SendTo("/topic/messages")
     private void sendAlert(SignalData d) {
 
-    }
+    }*/
 }

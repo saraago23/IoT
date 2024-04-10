@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface ApplianceRepository extends MongoRepository<Appliance,String> {
 
      Optional<Appliance> findByType(DeviceType type);
-     Optional<Appliance> findApplianceByType(DeviceType type, DeviceAttribute attribute);
 }

@@ -13,5 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class SignalData {
     private String message;
-    private List<Double> values;
+    private Double value;
+    private Boolean critical;
 }
