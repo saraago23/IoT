@@ -19,8 +19,9 @@ public class CoreService {
     private ApplianceRepository applianceRepository;
     @Autowired
     private DataPointRepository dataPointRepository;
-    @Autowired
+ @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
 
     public void handleDataPoint(DataPoint dp) {
 
@@ -52,11 +53,12 @@ public class CoreService {
 
     @SendTo("/topic/messages")
     private void sendSignal(SignalData d) {
-        messagingTemplate.convertAndSend("/topic/messages", d);
+        //messagingTemplate.convertAndSend("/topic/messages", d);
     }
 
-  /*  @SendTo("/topic/messages")
+  @SendTo("/topic/messages")
     private void sendAlert(SignalData d) {
 
-    }*/
+    }
+
 }
