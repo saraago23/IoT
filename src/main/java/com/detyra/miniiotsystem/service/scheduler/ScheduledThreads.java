@@ -29,7 +29,7 @@ public class ScheduledThreads {
     public void readData(DeviceType type, DeviceAttribute attr) {
 
         // generate random number;
-        double value = Math.random();
+        double value = Math.random()*1000;
         Instant now = Instant.now();
 
         DataPoint dt = new DataPoint(type, attr, value, now);

@@ -15,12 +15,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CoreService {
-    @Autowired
-    private ApplianceRepository applianceRepository;
-    @Autowired
-    private DataPointRepository dataPointRepository;
- @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final ApplianceRepository applianceRepository;
+    private final DataPointRepository dataPointRepository;
+    //private final SimpMessagingTemplate messagingTemplate;
+
+    public CoreService(ApplianceRepository applianceRepository, DataPointRepository dataPointRepository ) {
+        this.applianceRepository = applianceRepository;
+        this.dataPointRepository = dataPointRepository;
+        //this.messagingTemplate = messagingTemplate;
+    }
 
 
     public void handleDataPoint(DataPoint dp) {
@@ -53,10 +56,10 @@ public class CoreService {
 
     @SendTo("/topic/messages")
     private void sendSignal(SignalData d) {
-        //messagingTemplate.convertAndSend("/topic/messages", d);
+      //  messagingTemplate.convertAndSend("/topic/messages", d);
     }
 
-  @SendTo("/topic/messages")
+    @SendTo("/topic/messages")
     private void sendAlert(SignalData d) {
 
     }
