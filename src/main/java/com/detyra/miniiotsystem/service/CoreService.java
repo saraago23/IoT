@@ -7,24 +7,22 @@ import com.detyra.miniiotsystem.entity.SignalData;
 import com.detyra.miniiotsystem.exception.GeneralException;
 import com.detyra.miniiotsystem.repository.ApplianceRepository;
 import com.detyra.miniiotsystem.repository.DataPointRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.detyra.miniiotsystem.service.handler.AppHandler;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
+
+import java.io.IOException;
 
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CoreService {
     private final ApplianceRepository applianceRepository;
     private final DataPointRepository dataPointRepository;
-    //private final SimpMessagingTemplate messagingTemplate;
-
-    public CoreService(ApplianceRepository applianceRepository, DataPointRepository dataPointRepository ) {
-        this.applianceRepository = applianceRepository;
-        this.dataPointRepository = dataPointRepository;
-        //this.messagingTemplate = messagingTemplate;
-    }
-
 
     public void handleDataPoint(DataPoint dp) {
 
@@ -56,12 +54,23 @@ public class CoreService {
 
     @SendTo("/topic/messages")
     private void sendSignal(SignalData d) {
-      //  messagingTemplate.convertAndSend("/topic/messages", d);
+        //  messagingTemplate.convertAndSend("/topic/messages", d);
+        if (AppHandler.SESSION != null) {
+            try {
+                if (d.getCritical()) {
+                    AppHandler.SESSION.sendMessage(new TextMessage("Message: " + d.getMessage() + " value: " + d.getValue() + " is critical! "));
+                }else{
+                    AppHandler.SESSION.sendMessage(new TextMessage("Message: " + d.getMessage() + " value: " + d.getValue()));
+                }
+            } catch (IOException e) {
+                log.error("Something went wrong: {} ", e.getMessage());
+            }
+        }
     }
 
-    @SendTo("/topic/messages")
+   /* @SendTo("/topic/messages")
     private void sendAlert(SignalData d) {
 
-    }
+    }*/
 
 }
