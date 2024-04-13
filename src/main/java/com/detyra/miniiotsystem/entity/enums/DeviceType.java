@@ -1,5 +1,8 @@
 package com.detyra.miniiotsystem.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum DeviceType {
 
     FRIDGE,

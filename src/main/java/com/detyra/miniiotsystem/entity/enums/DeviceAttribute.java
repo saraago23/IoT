@@ -1,7 +1,6 @@
 package com.detyra.miniiotsystem.entity.enums;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum DeviceAttribute {
