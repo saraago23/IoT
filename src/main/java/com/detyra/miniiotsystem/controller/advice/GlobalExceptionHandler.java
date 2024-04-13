@@ -57,7 +57,6 @@ public class GlobalExceptionHandler {
                 .map(Enum::name)
                 .collect(Collectors.joining(", "));
     }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ModelErrorMessage> handleConstraintViolationException(Exception ex, HttpServletRequest request) {
         var resp = ModelErrorMessage.builder()
@@ -66,6 +65,5 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI()).build();
         return ResponseEntity.badRequest().body(resp);
     }
-
 
 }

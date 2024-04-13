@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-
 @Service
 @Slf4j
 public class CoreServiceImpl implements CoreService {
@@ -51,23 +50,21 @@ public class CoreServiceImpl implements CoreService {
         log.error(d.getMessage() + " is critical! ");
         messagingTemplate.convertAndSend("/topic/alerts", d.getMessage() + " is critical! ");
     }
-
+    private void storeInDb(DataPoint dp) {
+        dataPointRepository.save(dp);
+    }
     public void handleDataPoint(DataPoint dp) {
 
-        // 1. Find the device in the DB (by type & attribute)
         Appliance appliance = applianceRepository.findByType(dp.getType()).orElseThrow(() -> new GeneralException("No appliance found!"));
 
         ApplianceAttribute applianceAttribute = appliance.getAttributes().stream().filter(attribute -> attribute.getAttribute().equals(dp.getAttribute())).findFirst().orElseThrow(() -> new GeneralException("This device does not have this attribute "));
 
-        // 2. write data point to DB
         storeInDb(dp);
 
-        // 3. sendSignal
         SignalData signalData = new SignalData();
         signalData.setValue(dp.getValue());
         signalData.setMessage("Value of: " + dp.getType() + " " + applianceAttribute.getAttribute().name() + " : " + dp.getValue());
 
-        // 4. Check if signal value is within appliance attribute Min & Max, if yes sendAlert
         if (signalData.getValue() > applianceAttribute.getMax() || signalData.getValue() < applianceAttribute.getMin()) {
             signalData.setCritical(true);
             sendAlert(signalData);
@@ -85,7 +82,7 @@ public class CoreServiceImpl implements CoreService {
         if (appliance.getPowerOn().equals(true)) {
 
             for (int i = 0; i < 100; i++) {
-                // generate random number;
+
                 double value = Math.random() * 1000;
                 Instant now = Instant.now();
 
@@ -105,7 +102,6 @@ public class CoreServiceImpl implements CoreService {
     public void readDataModeOnOff(DeviceType type, DeviceAttribute attr) {
         Appliance appliance = applianceRepository.findByType(type).orElseThrow(() -> new GeneralException("No appliance found!"));
 
-        // generate random number;
         double value = Math.round(Math.random());
         Instant now = Instant.now();
         if (value == 1) {
@@ -120,10 +116,5 @@ public class CoreServiceImpl implements CoreService {
         handleDataPoint(dt);
 
     }
-
-    private void storeInDb(DataPoint dp) {
-        dataPointRepository.save(dp);
-    }
-
 
 }

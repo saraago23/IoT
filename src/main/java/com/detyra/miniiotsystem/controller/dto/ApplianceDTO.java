@@ -1,6 +1,5 @@
 package com.detyra.miniiotsystem.controller.dto;
 
-import com.detyra.miniiotsystem.entity.ApplianceAttribute;
 import com.detyra.miniiotsystem.entity.enums.DeviceType;
 import com.detyra.miniiotsystem.entity.enums.Room;
 import lombok.AllArgsConstructor;

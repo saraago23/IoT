@@ -26,7 +26,7 @@ public class ApplianceController {
         return ResponseEntity.ok(applianceService.findApplianceByType(type));
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<ApplianceDTO>> getAllAppliances() {
         return ResponseEntity.ok(applianceService.getAppliances());
     }
