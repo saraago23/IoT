@@ -66,23 +66,23 @@ public class DeviceDataReaderServiceImpl implements DeviceDataReaderService {
     public void readDataModeOnOff(DeviceType type, DeviceAttribute attr) {
         Appliance appliance = applianceRepository.findByType(type).orElseThrow(() -> new GeneralException("No appliance found!"));
 
-        double value = Math.round(Math.random());
-        Instant now = Instant.now();
-        if (value == 1) {
-            appliance.setPowerOn(true);
-            applianceRepository.save(appliance);
-        } else {
-            appliance.setPowerOn(false);
-            applianceRepository.save(appliance);
-        }
-        DataPoint dt = new DataPoint(type, attr, value, now);
+        for (int i = 0; i <= 100; i++) {
 
-        coreService.handleDataPoint(dt);
+            double value = Math.round(Math.random());
+            Instant now = Instant.now();
 
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            log.error("Something unexpected happened");
+            appliance.setPowerOn(value == 1);
+            applianceRepository.save(appliance);
+
+            DataPoint dt = new DataPoint(type, attr, value, now);
+
+            coreService.handleDataPoint(dt);
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                log.error("Something unexpected happened");
+            }
         }
     }
 }
