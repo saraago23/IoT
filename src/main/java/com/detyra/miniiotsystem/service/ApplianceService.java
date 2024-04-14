@@ -1,12 +1,13 @@
 package com.detyra.miniiotsystem.service;
 
 import com.detyra.miniiotsystem.controller.dto.ApplianceDTO;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface ApplianceService {
 
-    ApplianceDTO addAppliance(ApplianceDTO appliance);
+    ApplianceDTO addAppliance(@Valid ApplianceDTO appliance);
 
     List<ApplianceDTO> getAppliances();
 

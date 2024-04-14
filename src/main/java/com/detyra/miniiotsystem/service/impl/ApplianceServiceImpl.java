@@ -7,8 +7,11 @@ import com.detyra.miniiotsystem.controller.dto.ApplianceDTO;
 import com.detyra.miniiotsystem.exception.GeneralException;
 import com.detyra.miniiotsystem.repository.ApplianceRepository;
 import com.detyra.miniiotsystem.service.ApplianceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +21,12 @@ import static com.detyra.miniiotsystem.mapper.ApplianceAttributeMapper.*;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class ApplianceServiceImpl implements ApplianceService {
 
     private final ApplianceRepository applianceRepository;
 
-    public ApplianceDTO addAppliance(ApplianceDTO appliance) {
+    public ApplianceDTO addAppliance(@Valid @RequestBody ApplianceDTO appliance) {
 
         if (applianceRepository.findByType(appliance.getType()).isPresent()) {
             throw new GeneralException("This device type already exists on the db");

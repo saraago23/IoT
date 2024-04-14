@@ -2,6 +2,7 @@ package com.detyra.miniiotsystem.controller.advice;
 
 import com.detyra.miniiotsystem.exception.ModelErrorMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +15,15 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ModelErrorMessage> handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request){
+        var resp = ModelErrorMessage.builder()
+                .message(ex.getMessage()).statusCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI()).build();
+        return ResponseEntity.badRequest().body(resp);
+    }
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ModelErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request) {
         String enumClassName = extractEnumClassName(ex.getMessage());
