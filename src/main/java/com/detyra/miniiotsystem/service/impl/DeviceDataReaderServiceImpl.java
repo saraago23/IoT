@@ -25,7 +25,7 @@ public class DeviceDataReaderServiceImpl implements DeviceDataReaderService {
         this.applianceRepository = applianceRepository;
     }
 
-   /* @PostConstruct
+    @PostConstruct
     public void initializeData() {
         this.readData(DeviceType.FRIDGE, DeviceAttribute.HUMIDITY);
         this.readData(DeviceType.TOASTER, DeviceAttribute.POWER);
@@ -36,7 +36,7 @@ public class DeviceDataReaderServiceImpl implements DeviceDataReaderService {
         this.readData(DeviceType.AIR_CONDITIONER, DeviceAttribute.TEMPERATURE);
         this.readDataModeOnOff(DeviceType.FRIDGE, DeviceAttribute.HUMIDITY);
         log.info("You got some data");
-    }*/
+    }
 
     public void readData(DeviceType type, DeviceAttribute attr) {
 
